@@ -21,8 +21,8 @@ function updateInput(e){
     searchValue = e.target.value; 
 }
 
-//create an async function to fetch the photos from Pexels
-async function curatedPhotos(){
+// this function fetches the data for us 
+async function fetchApi(url){
     const dataFetch = await fetch('https://api.pexels.com/v1/curated?per_page=15&page=1', {
         // method is what we want to do with the data, we want to GET the data 
         method: 'GET',
@@ -31,10 +31,15 @@ async function curatedPhotos(){
             Authorization: auth
         }
     });
-    // parses the data into object from which we can access it 
+     // parses the data into object from which we can access it 
     const data = await dataFetch.json();
     console.log(data);
-    // we have to do something forEach photo added
+    // return the data for later use 
+    return data;
+}
+
+// this function generates the html (loads the images and photographer names) when the data is received. 
+function generatePictures(data){
     data.photos.forEach(photo => {
         // create a new div for each photo programmatically
         const galleryImg = document.createElement('div');
@@ -45,3 +50,29 @@ async function curatedPhotos(){
         gallery.appendChild(galleryImg);
     })
 }
+
+//create an async function to fetch the photos from Pexels
+async function curatedPhotos(){
+
+    // load up random curated images from Pexels 
+    const data = await fetchApi('https://api.pexels.com/v1/curated?per_page=15&page=1');
+    generatePictures(data);
+}
+
+async function searchPhotos(searchQuery){
+    clear();
+    // this data is based on the search query 
+    const data = await fetchApi(`https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=1`);
+    // load up pictures based on search query 
+    generatePictures(data);
+}
+
+// this function will clear the current images to make way for the new images based on our search query 
+function clear(){
+    // removes the image html 
+    gallery.innerHTML = "";
+    // clears the text from the search bar 
+    searchInput.value = '';
+}
+
+curatedPhotos();
