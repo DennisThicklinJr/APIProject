@@ -7,6 +7,8 @@ const gallery = document.querySelector('.gallery');
 const searchInput = document.querySelector('.search-input');
 const form = document.querySelector('.search-form');
 let searchValue; 
+let fetchLink;
+
 
 searchInput.addEventListener('input', updateInput)
 form.addEventListener('submit', (e) => {
@@ -17,13 +19,13 @@ form.addEventListener('submit', (e) => {
 })
 
 function updateInput(e){
-    // console.log(e.target.value);
+    console.log(e.target.value);
     searchValue = e.target.value; 
 }
 
 // this function fetches the data for us 
 async function fetchApi(url){
-    const dataFetch = await fetch('https://api.pexels.com/v1/curated?per_page=15&page=1', {
+    const dataFetch = await fetch(url, {
         // method is what we want to do with the data, we want to GET the data 
         method: 'GET',
         headers:{
@@ -62,7 +64,8 @@ async function curatedPhotos(){
 async function searchPhotos(searchQuery){
     clear();
     // this data is based on the search query 
-    const data = await fetchApi(`https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=1`);
+    fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=1`;
+    const data = await fetchApi(fetchLink);
     // load up pictures based on search query 
     generatePictures(data);
 }
