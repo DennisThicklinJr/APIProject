@@ -6,8 +6,11 @@ const auth = "563492ad6f9170000100000196d66451a04b40efa0b72fd96084c5ab";
 const gallery = document.querySelector('.gallery');
 const searchInput = document.querySelector('.search-input');
 const form = document.querySelector('.search-form');
+const more = document.querySelector('.more');
 let searchValue; 
 let fetchLink;
+let page = 1;
+// let currentSearch;
 
 
 searchInput.addEventListener('input', updateInput)
@@ -17,6 +20,9 @@ form.addEventListener('submit', (e) => {
     // this plugs the search into the search url and we get new images based on it 
     searchPhotos(searchValue);
 })
+
+//event listener for the more button
+more.addEventListener('click', loadMore)
 
 function updateInput(e){
     console.log(e.target.value);
@@ -76,6 +82,20 @@ function clear(){
     gallery.innerHTML = "";
     // clears the text from the search bar 
     searchInput.value = '';
+}
+
+async function loadMore() {
+    page++;
+    if(searchValue){
+        // load up more images based on our search 
+        fetchLink = `https://api.pexels.com/v1/search?query=${searchValue}&per_page=15&page=${page}`
+    }else{
+        // load up more curated images provided by Pexels
+        fetchLink = `https://api.pexels.com/v1/curated?per_page=15&page=${page}` 
+    }
+    //generate the pictures
+    const data = await fetchApi(fetchLink);
+    generatePictures(data);
 }
 
 curatedPhotos();
