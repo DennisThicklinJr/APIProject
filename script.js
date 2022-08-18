@@ -52,8 +52,12 @@ function generatePictures(data){
         // create a new div for each photo programmatically
         const galleryImg = document.createElement('div');
         galleryImg.classList.add('gallery-img');
-        galleryImg.innerHTML = `<img src=${photo.src.large}></img>
-        <p>${photo.photographer}</p>
+        galleryImg.innerHTML = `
+        <div class='gallery-info'>
+            <p>${photo.photographer}</p>
+            <a href=${photo.src.original}>Download</a>
+        </div>
+        <img src=${photo.src.large}></img>
         `;
         gallery.appendChild(galleryImg);
     })
@@ -63,14 +67,14 @@ function generatePictures(data){
 async function curatedPhotos(){
 
     // load up random curated images from Pexels 
-    const data = await fetchApi('https://api.pexels.com/v1/curated?per_page=15&page=1');
+    const data = await fetchApi('https://api.pexels.com/v1/curated?per_page=16&page=1');
     generatePictures(data);
 }
 
 async function searchPhotos(searchQuery){
     clear();
     // this data is based on the search query 
-    fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15&page=1`;
+    fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=16&page=1`;
     const data = await fetchApi(fetchLink);
     // load up pictures based on search query 
     generatePictures(data);
@@ -88,10 +92,10 @@ async function loadMore() {
     page++;
     if(searchValue){
         // load up more images based on our search 
-        fetchLink = `https://api.pexels.com/v1/search?query=${searchValue}&per_page=15&page=${page}`
+        fetchLink = `https://api.pexels.com/v1/search?query=${searchValue}&per_page=16&page=${page}`
     }else{
         // load up more curated images provided by Pexels
-        fetchLink = `https://api.pexels.com/v1/curated?per_page=15&page=${page}` 
+        fetchLink = `https://api.pexels.com/v1/curated?per_page=16&page=${page}` 
     }
     //generate the pictures
     const data = await fetchApi(fetchLink);
